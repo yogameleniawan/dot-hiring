@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -11,9 +14,38 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $data = Category::latest();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) {
+                    $json = json_encode($data);
+                    $btn = "<td>
+                    <div class='dropdown text-center'>
+                        <button class='btn btn-action dropdown-toggle me-1' type='button'
+                            id='dropdownMenuButtonIcon' data-bs-toggle='dropdown'
+                            aria-haspopup='true' aria-expanded='false'>
+                            <i class='bi bi-error-circle me-50'></i> Action
+                        </button>
+                        <div class='dropdown-menu' aria-labelledby='dropdownMenuButtonIcon'>
+                            <a class='dropdown-item' onclick='editPage($json)'>
+                            <i class='bi bi-pencil-square'></i>
+                            Edit</a>
+                            <a class='dropdown-item' onclick='deleteModal($json)' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'>
+                            <i class='bi bi-trash-fill'></i>
+                            Delete</a>
+                        </div>
+                    </div>
+                    </td>";
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+
+                ->make(true);
+        }
+        return view('admin.category.index');
     }
 
     /**
@@ -34,7 +66,10 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->title);
+        $table = Category::create($data);
+        return response()->json(['data' => $table], 200);
     }
 
     /**
@@ -56,7 +91,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $table = Category::find($id);
+        return response()->json(['data' => $table], 200);
     }
 
     /**
@@ -68,7 +104,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->title);
+        $table = Category::find($request->id)->update($data);
+        return response()->json(['data' => $request->id], 200);
     }
 
     /**
@@ -77,8 +116,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        $table = Category::find($request->id)->delete();
+        return response()->json(['data' => $table], 200);
     }
 }

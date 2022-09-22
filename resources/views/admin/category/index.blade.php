@@ -13,9 +13,7 @@
             <table id="data_table" class="table table-bordered table-striped table-hover js-basic-example dataTable">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Created At</th>
+                        <th>Name</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -43,22 +41,11 @@
         table = $('#data_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('news.index') }}",
+            ajax: "{{ route('categories.index') }}",
             columns: [
                 {
-                    data: 'title',
-                    name: 'news.title'
-                },
-                {
                     data: 'name',
-                    name: 'categories.name'
-                },
-                {
-                    data: 'created_at',
-                    name: 'news.created_at',
-                    render : function (data,full ) {
-                    return moment(data).format('DD-MMM-YYYY');
-                    }
+                    name: 'name'
                 },
                 {
                     data: 'action',
@@ -105,24 +92,14 @@
         return (
             `
             <form id="form-data" enctype="multipart/form-data">
-                    <label for="category"> Category</label>
-                    <div class="form-group">
-                        <select class="form-select" name="category_id" id="category">
-                            <option selected disabled>Select Category</option>
-                        </select>
-                    </div>
 
-                    <label for="title"> Title</label>
+                    <label for="name"> Name</label>
                     <div class="form-group">
                         <div class="form-line">
-                            <input type="text" id="title" name="title" class="form-control" placeholder="Title" autocomplete="off" required>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Name" autocomplete="off" required>
                         </div>
                     </div>
 
-                    <label for="detail"> Detail</label>
-                    <div class="form-group">
-                        <div id="summernote"></div>
-                    </div>
                     <a id="btn-cancel"class="btn btn-light-secondary" onclick="tablePage()">
                         <i class="bx bx-x d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">Kembali</span>
@@ -142,23 +119,11 @@
             `
             <form id="form-data" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="${data.id}">
-                    <label for="category"> Category</label>
-                    <div class="form-group">
-                        <select class="form-select" name="category_id" id="category">
-                            <option selected disabled>Select Category</option>
-                        </select>
-                    </div>
-
-                    <label for="title"> Title</label>
+                    <label for="name"> Name</label>
                     <div class="form-group">
                         <div class="form-line">
-                            <input type="text" id="title" name="title" class="form-control" placeholder="Title" autocomplete="off" value="${data.title}">
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Name" autocomplete="off" value="${data.name}">
                         </div>
-                    </div>
-
-                    <label for="detail"> Detail</label>
-                    <div class="form-group">
-                        <div id="summernote"></div>
                     </div>
                     <a id="btn-cancel"class="btn btn-light-secondary" onclick="tablePage()">
                         <i class="bx bx-x d-block d-sm-none"></i>
@@ -180,9 +145,7 @@
                 <table id="data_table" class="table table-bordered table-striped table-hover js-basic-example dataTable">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Created At</th>
+                            <th>Name</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -193,18 +156,11 @@
 
     function addPage()
     {
-        getCategory()
         $('#add-data').slideUp()
         let html = addComponent();
-
-        $('select').select2({ width: '100%', placeholder: "Select an Option", allowClear: true });
         $('.card-body').fadeOut()
         $('.card-body').html(html)
         $('.card-body').fadeIn()
-        $('#summernote').summernote({
-            tabsize: 2,
-            height: 120,
-        })
     }
 
     function tablePage()
@@ -219,17 +175,11 @@
 
     function editPage(data)
     {
-        getCategoryByValue(data.category_id)
         $('#add-data').slideUp()
         let html = editComponent(data);
         $('.card-body').fadeOut()
         $('.card-body').html(html)
         $('.card-body').fadeIn()
-        $('#summernote').summernote({
-            tabsize: 2,
-            height: 120,
-        })
-        $("#summernote").summernote("code", `${data.detail}`);
     }
 
 
@@ -262,16 +212,14 @@
         $('#btn-cancel').addClass('d-none')
         let data = new FormData($('#form-data')[0]);
         $.ajax({
-            url: '{{route('news.store')}}',
+            url: '{{route('categories.store')}}',
             type: "POST",
             dataType: "json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: {
-                'category_id': $('#category').select2().val(),
-                'title': $('#title').val(),
-                'detail': $('#summernote').summernote('code'),
+                'name': $('#name').val(),
             },
             statusCode: {
                 500: function(response) {
@@ -303,18 +251,17 @@
         $('#btn-loader').removeClass('d-none')
         $('#btn-action').addClass('d-none')
         $('#btn-cancel').addClass('d-none')
-
+        let data = new FormData($('#form-data')[0]);
+        data.append('_method', 'PATCH');
         $.ajax({
-            url: `{{route('news.update','id')}}`,
+            url: `{{route('categories.update','id')}}`,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: {
                 'id': id,
-                'category_id': $('#category').select2().val(),
-                'title': $('#title').val(),
-                'detail': $('#summernote').summernote('code'),
+                'name': $('#name').val(),
                 '_method': 'PATCH'
             },
             statusCode: {
@@ -347,7 +294,7 @@
         $('#btn-loader').removeClass('d-none')
         $('#btn-action').addClass('d-none')
         $.ajax({
-            url: `{{route('news.destroy','id')}}`,
+            url: `{{route('categories.destroy','id')}}`,
             type: "DELETE",
             dataType: "json",
             headers: {
@@ -376,48 +323,6 @@
                 tablePage()
                 $('#exampleModalCenter').modal('hide');
             }
-        });
-    }
-
-    function getCategory()
-    {
-        $.ajax({
-            url: `{{route('news.create')}}`,
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-                data.data.forEach(item => {
-                    $('#category').append(`<option value="${item.id}">${item.name}</option>`)
-                });
-                $('#category').addClass('choices')
-                initSelect()
-            }
-        });
-    }
-
-    function getCategoryByValue(value)
-    {
-        $.ajax({
-            url: `{{route('news.create')}}`,
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-                let html
-                data.data.forEach(item => {
-                    html += `<option value="${item.id}">${item.name}</option>`
-                });
-                $('#category').html(html)
-
-                $('#category').select2().val(value).trigger('change.select2');
-                initSelect()
-            }
-        });
-    }
-
-    function initSelect()
-    {
-        $('#category').select2({
-            placeholder: 'Select an Category',
         });
     }
 </script>

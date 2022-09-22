@@ -78,3 +78,28 @@ footer.main-footer {
 .swiper-button-disabled{
     cursor: not-allowed;
 }
+
+.btn-action {
+    background-color: #5a5b5c;
+    border-color: #5a5b5c;
+    color: white;
+}
+
+div.dataTables_wrapper div.dataTables_processing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    margin-top: -26px;
+    text-align: center;
+    padding: 1em 0;
+    color: white;
+    background-color: #29aa00;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #1e2125;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}

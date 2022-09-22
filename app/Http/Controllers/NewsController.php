@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class NewsController extends Controller
@@ -16,34 +18,33 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = News::leftJoin('categories','news.category_id','=','categories.id')->get();
+            $data = News::leftJoin('categories','news.category_id','=','categories.id')
+            ->select('news.id','categories.name','news.category_id','news.title','news.detail','news.created_at')
+            ->latest();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     $json = json_encode($data);
                     $btn = "<td>
                     <div class='dropdown'>
-                        <button class='btn btn-primary dropdown-toggle me-1' type='button'
+                        <button class='btn btn-action dropdown-toggle me-1' type='button'
                             id='dropdownMenuButtonIcon' data-bs-toggle='dropdown'
                             aria-haspopup='true' aria-expanded='false'>
                             <i class='bi bi-error-circle me-50'></i> Action
                         </button>
                         <div class='dropdown-menu' aria-labelledby='dropdownMenuButtonIcon'>
-                            <a class='dropdown-item' href='#' onclick='editPage($json)'>
-                            <i class='bi bi-bar-chart-alt-2 me-50'></i>
+                            <a class='dropdown-item' onclick='editPage($json)'>
+                            <i class='bi bi-pencil-square'></i>
                             Edit</a>
-                            <a class='dropdown-item' href='#' onclick='deleteModal($json)' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'>
-                            <i class='bi bi-bar-chart-alt-2 me-50'></i>
+                            <a class='dropdown-item' onclick='deleteModal($json)' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'>
+                            <i class='bi bi-trash-fill'></i>
                             Delete</a>
                         </div>
                     </div>
                     </td>";
                     return $btn;
                 })
-                ->addColumn('created_at', function ($row){
-                    return $row->created_at->format('d-M-Y');
-                })
-                ->rawColumns(['action','created_at'])
+                ->rawColumns(['action'])
 
                 ->make(true);
         }
@@ -57,7 +58,8 @@ class NewsController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return response()->json(['data' => $categories], 200);
     }
 
     /**
@@ -68,7 +70,10 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->title);
+        $table = News::create($data);
+        return response()->json(['data' => $table], 200);
     }
 
     /**
@@ -90,7 +95,9 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $table = News::find($id);
+        $categories = Category::all();
+        return response()->json(['data' => $table, 'categories' => $categories], 200);
     }
 
     /**
@@ -102,7 +109,10 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->title);
+        $table = News::find($request->id)->update($data);
+        return response()->json(['data' => $request->id], 200);
     }
 
     /**
@@ -111,8 +121,9 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        $table = News::find($request->id)->delete();
+        return response()->json(['data' => $table], 200);
     }
 }
