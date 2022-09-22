@@ -5,6 +5,7 @@
   - [Daftar Isi](#daftar-isi)
   - [Setup pertama kali](#setup-pertama-kali)
   - [Requirements](#requirements)
+  - [Credentials](#credentials)
   - [Copyright](#copyright)
 
 ## Setup pertama kali
@@ -57,6 +58,11 @@ Pastikan konfigurasi database di `.env` sudah benar
 - [NodeJs >= 14.0](https://nodejs.org/en/download/)
 - Apache >= 2.4.26 / Nginx >= 1.18
 - Laravel 8 [Laravel Requirements](https://laravel.com/docs/9.x/installation)
+
+## Credentials
+- User Login 
+email = admin@gmail.com
+password = password123
 
 ## Copyright
 2022 [Yoga Meleniawan Pamungkas](https://www.linked.in/id/yogameleniawan)   
