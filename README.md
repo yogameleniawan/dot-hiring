@@ -61,8 +61,8 @@ Pastikan konfigurasi database di `.env` sudah benar
 
 ## Credentials
 - User Login 
-email = admin@gmail.com
-password = password123
+    - email = admin@gmail.com
+    - password = password123
 
 ## Copyright
 2022 [Yoga Meleniawan Pamungkas](https://www.linked.in/id/yogameleniawan)   
