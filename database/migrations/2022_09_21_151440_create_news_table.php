@@ -19,7 +19,7 @@ class CreateNewsTable extends Migration
             $table->string('title');
             $table->text('detail');
             $table->text('slug');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->timestamps();
         });
     }

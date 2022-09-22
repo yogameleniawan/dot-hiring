@@ -1,9 +1,11 @@
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
+            <div style="text-align: -webkit-center">
+                <a href="/">
+                    <img src="{{ url('assets/images/logo.png') }}" alt="Logo" style="width: 20%;height: 100%;">
+                </a>
+            </div>
         </x-slot>
 
         <!-- Validation Errors -->
@@ -50,7 +52,7 @@
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-button class="ml-4">
+                <x-button class="ml-4" style="background-color: #29aa00;">
                     {{ __('Register') }}
                 </x-button>
             </div>
