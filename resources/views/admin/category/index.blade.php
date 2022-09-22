@@ -17,6 +17,12 @@
                         <th></th>
                     </tr>
                 </thead>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -149,6 +155,12 @@
                             <th></th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         `)

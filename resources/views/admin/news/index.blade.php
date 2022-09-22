@@ -19,6 +19,14 @@
                         <th></th>
                     </tr>
                 </thead>
+                <tfoot>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -186,6 +194,14 @@
                             <th></th>
                         </tr>
                     </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                        <td></td>
+                    </tr>
+                </tfoot>
                 </table>
             </div>
         `)
